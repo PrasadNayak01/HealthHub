@@ -4,7 +4,7 @@
 
 *Smart India Hackathon 2025 - College Mini Project*
 
-![HealthHub](https://img.shields.io/badge/HealthHub-Healthcare_Platform-blue)
+![HealthHub](https://img.shields.io/badge/HealthHub-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
 ![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
 ![SIH 2025](https://img.shields.io/badge/SIH-2025-red)
