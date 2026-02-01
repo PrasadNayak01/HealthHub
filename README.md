@@ -319,7 +319,8 @@ healthhub/
 ├── SQL Query/
 │   └── HealthHub.sql
 ├── .gitignore
-└── README.md
+├── README.md
+└── LICENSE
 ```
 
 ---
