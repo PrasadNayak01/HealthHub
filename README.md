@@ -13,15 +13,17 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Problem Statement](#problem-statement)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Environment Setup](#environment-setup)
-- [Project Structure](#project-structure)
-- [Screenshots](#screenshots)
-- [Support](#support)
+## 📋 Table of Contents
+
+- [🌟 Overview](#-overview)
+- [🎯 Problem Statement](#-problem-statement)
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📦 Installation](#-installation)
+- [🔧 Environment Setup](#-environment-setup)
+- [📁 Project Structure](#-project-structure)
+- [📸 Screenshots](#-screenshots)
+- [📞 Support](#-support)
 
 ---
 
