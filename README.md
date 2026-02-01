@@ -360,8 +360,8 @@ healthhub/
 ## 📞 Support
 
 For support and queries:
-- **GitHub:** [Create an issue](https://github.com/yourusername/healthhub/issues)
-- **Email:** your.email@example.com
+- **GitHub:** [Prasad Nayak](https://github.com/PrasadNayak01)
+- **Email:** worknayakprasad@gmail.com
 
 ---
 
