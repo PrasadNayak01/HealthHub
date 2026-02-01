@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - Health Hub</title>
+    <link rel="icon" type="image/png" href="../assets/Health Hub Logo - Title.png">
+    <link rel="stylesheet" href="../css/appointments.css">
+</head>
+<body>
+    <!-- Upload Documents Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Complete Appointment</h3>
+                <button class="close-modal" onclick="closeUploadModal()">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="patient-info-modal">
+                    <p><strong>Patient ID:</strong> <span id="modalPatientId"></span></p>
+                    <p><strong>Patient Name:</strong> <span id="modalPatientName"></span></p>
+                </div>
+                
+                <div class="upload-section">
+                    <h4>Upload Prescriptions/Reports (Optional)</h4>
+                    <p class="upload-hint">You can upload multiple files (PDF, JPG, PNG)</p>
+                    
+                    <div class="file-input-wrapper">
+                        <input 
+                            type="file" 
+                            id="fileInput" 
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            multiple
+                            onchange="handleFileSelect()"
+                        >
+                        <label for="fileInput" class="file-label">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            </svg>
+                            Choose Files
+                        </label>
+                    </div>
+                    
+                    <div class="selected-files" id="selectedFiles"></div>
+                </div>
+                
+                <div class="notes-section">
+                    <label for="appointmentNotes">Notes (Optional)</label>
+                    <textarea 
+                        id="appointmentNotes" 
+                        placeholder="Add any notes about this appointment..."
+                        rows="3"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeUploadModal()">Cancel</button>
+                <button class="btn-modal-complete" onclick="completeAppointment()">Complete Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert -->
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="alertIcon">⚠</div>
+                <h3 class="custom-alert-title" id="alertTitle">Alert</h3>
+            </div>
+            <p class="custom-alert-message" id="alertMessage">Message</p>
+            <div class="custom-alert-buttons" id="alertButtons">
+                <button class="custom-alert-button primary" onclick="closeCustomAlert()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="logo-icon">
+                <img src="../assets/Health Hub Logo - Main.png" alt="">
+            </div>
+            <span class="logo-text">HEALTH HUB</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn-logout" onclick="showLogoutConfirm()">
+                <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="doctor-dashboard.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="doctor-profile.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="search-patients.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <span>Search Patients</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="appointments.html" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+                        </svg>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="patients.html" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+                </li> -->
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Add Appointment Section -->
+            <div class="add-appointment-section">
+                <h1>Appointments</h1>
+                <div class="add-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientId">Patient ID *</label>
+                            <input 
+                                type="text" 
+                                id="patientId" 
+                                placeholder="Enter Patient ID (PID-...)"
+                                onblur="fetchPatientDetails()"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date *</label>
+                            <input type="date" id="appointmentDate" min="">
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentTime">Time (Optional)</label>
+                            <input type="time" id="appointmentTime">
+                        </div>
+                    </div>
+                    
+                    <div class="patient-details" id="patientDetails" style="display: none;">
+                        <h4>Patient Details</h4>
+                        <div class="details-grid">
+                            <div><strong>Name:</strong> <span id="detailName"></span></div>
+                            <div><strong>Email:</strong> <span id="detailEmail"></span></div>
+                            <div><strong>Phone:</strong> <span id="detailPhone"></span></div>
+                            <div><strong>Age:</strong> <span id="detailAge"></span></div>
+                            <div><strong>Gender:</strong> <span id="detailGender"></span></div>
+                            <div><strong>Blood Group:</strong> <span id="detailBlood"></span></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-add" onclick="addAppointment()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Add Appointment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Appointments List -->
+            <div class="appointments-list" id="appointmentsList">
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p>Loading appointments...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/appointments.js"></script>
+</body>
+</html>

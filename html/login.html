@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/Health Hub Logo - Title.png">
+    <title>Health Hub - When your health finds perfect harmony.</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <!-- Custom Alert -->
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="alertIcon">✓</div>
+                <h3 class="custom-alert-title" id="alertTitle">Success</h3>
+            </div>
+            <p class="custom-alert-message" id="alertMessage">This is a custom alert message.</p>
+            <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <img src="../assets/Health Hub Logo - Main.png" alt="Health Hub">
+        </div>
+    </nav>
+
+    <main>
+        <div class="left-content">
+            <h1>Login</h1>
+            <p class="sub-heading">Enter your Health Hub account and stay in harmony with your health.</p>
+
+            <form action="">
+                <!-- EMAIL -->
+                <div class="input-group">
+                    <input type="email" id="email" required autocomplete="off">
+                    <label for="email">Email</label>
+                </div>
+                <!-- PASSWORD -->
+                <div class="input-group">
+                    <input type="password" id="password" required>
+                    <label for="password">Password</label>
+
+                    <span class="toggle-eye">
+                        <img src="../assets/eye-hide.png" id="eyeIcon">
+                    </span>
+                </div>
+                <div class="extra-row">
+                    <label class="remember">
+                        <input type="checkbox" id="remember-me">
+                        Remember me
+                    </label>
+
+                    <a href="./forgot-password.html" class="forgot">Forgot Password</a>
+                </div>
+
+                <input id="submit-btn" type="submit" value="Login">
+
+                <div class="no-account">
+                    Don&apos;t have an account? 
+                    <a href="./register.html" class="register-link">Sign up</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="right-content">
+            <img src="../assets/Login 3D Model.png" alt="Login 3D Model">
+        </div>
+    </main>
+
+    <script>
+        // // Custom Alert Functions
+        // function showCustomAlert(message, type = 'success') {
+        //     const overlay = document.getElementById('customAlert');
+        //     const icon = document.getElementById('alertIcon');
+        //     const title = document.getElementById('alertTitle');
+        //     const messageEl = document.getElementById('alertMessage');
+
+        //     if (type === 'success') {
+        //         icon.className = 'custom-alert-icon success';
+        //         icon.textContent = '✓';
+        //         title.textContent = 'Success';
+        //     } else {
+        //         icon.className = 'custom-alert-icon error';
+        //         icon.textContent = '✕';
+        //         title.textContent = 'Error';
+        //     }
+
+        //     messageEl.textContent = message;
+        //     overlay.style.display = 'block';
+        // }
+
+        // function closeCustomAlert() {
+        //     document.getElementById('customAlert').style.display = 'none';
+        // }
+
+        // // Close alert when clicking outside
+        // document.getElementById('customAlert').addEventListener('click', function(e) {
+        //     if (e.target === this) {
+        //         closeCustomAlert();
+        //     }
+        // });
+
+        // // Toggle password visibility
+        // document.querySelector('.toggle-eye').addEventListener('click', function() {
+        //     const passwordInput = document.getElementById('password');
+        //     const eyeIcon = document.getElementById('eyeIcon');
+            
+        //     if (passwordInput.type === 'password') {
+        //         passwordInput.type = 'text';
+        //         eyeIcon.src = '../assets/eye-show.png';
+        //     } else {
+        //         passwordInput.type = 'password';
+        //         eyeIcon.src = '../assets/eye-hide.png';
+        //     }
+        // });
+
+        // // Handle form submission
+        // document.querySelector('form').addEventListener('submit', async (e) => {
+        //     e.preventDefault();
+
+        //     const email = document.getElementById('email').value;
+        //     const password = document.getElementById('password').value;
+
+        //     try {
+        //         const response = await fetch('http://localhost:5001/login', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             credentials: 'include',
+        //             body: JSON.stringify({
+        //                 email,
+        //                 password
+        //             })
+        //         });
+
+        //         const data = await response.json();
+
+        //         if (data.success) {
+        //             showCustomAlert(data.message, 'success');
+        //             setTimeout(() => {
+        //                 window.location.href = data.redirect;
+        //             }, 1500);
+        //         } else {
+        //             showCustomAlert(data.message, 'error');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         showCustomAlert('Login failed. Please try again.', 'error');
+        //     }
+        // });
+    </script>
+    <script src="../js/login.js"></script>
+</body>
+</html>

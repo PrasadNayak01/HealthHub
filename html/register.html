@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/Health Hub Logo - Title.png">
+    <title>Health Hub - When your health finds perfect harmony.</title>
+    <link rel="stylesheet" href="../css/register.css">
+    <style>
+        
+    </style>
+</head>
+
+<body>
+    <!-- Custom Alert -->
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="alertIcon">✓</div>
+                <h3 class="custom-alert-title" id="alertTitle">Success</h3>
+            </div>
+            <p class="custom-alert-message" id="alertMessage">This is a custom alert message.</p>
+            <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <img src="../assets/Health Hub Logo - Main.png" alt="Health Hub">
+        </div>
+    </nav>
+
+    <main>
+        <div class="left-content">
+            <img src="../assets/Register 3D Model.png" alt="Login 3D Model">
+        </div>
+
+        <div class="right-content">
+            <h1>Sign up</h1>
+            <p class="sub-heading">Create your HealthHub account and begin your journey to harmony.</p>
+
+            <form action="">
+                <!-- User Type -->
+                <div class="input-group">
+                    <select id="user-type" required>
+                        <option value="" disabled selected></option>
+                        <option value="patient">Patient</option>
+                        <option value="doctor">Doctor</option>
+                    </select>
+                    <label for="user-type">User Type</label>
+                </div>
+
+                <!-- Name -->
+                <div class="input-group">
+                    <input type="text" id="name" required autocomplete="off">
+                    <label for="name">Name</label>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="input-group">
+                    <input type="email" id="email" required autocomplete="off">
+                    <label for="email">Email</label>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="input-group">
+                    <input type="tel" pattern="[0-9]{10}" maxlength="10" id="phone-number" required autocomplete="off">
+                    <label for="phone-number">Phone Number</label>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="input-group">
+                    <input type="password" id="password" required>
+                    <label for="password">Password</label>
+
+                    <span class="toggle-eye">
+                        <img src="../assets/eye-hide.png" class="eyeIcon">
+                    </span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <input type="password" id="confirm-password" required>
+                    <label for="confirm-password">Confirm Password</label>
+
+                    <span class="toggle-eye">
+                        <img src="../assets/eye-hide.png" class="eyeIcon">
+                    </span>
+                </div>
+
+                <div class="extra-row">
+                    <label class="remember">
+                        <input type="checkbox" id="terms">
+                        I agree to all the <span>Terms</span> and <span>Privacy Policies</span>
+                    </label>
+                </div>
+
+                <input id="submit-btn" type="submit" value="Create Account">
+
+                <div class="no-account">
+                    Already have an account?
+                    <a href="./login.html" class="register-link">Login</a>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // // Custom Alert Functions
+        // function showCustomAlert(message, type = 'success') {
+        //     const overlay = document.getElementById('customAlert');
+        //     const icon = document.getElementById('alertIcon');
+        //     const title = document.getElementById('alertTitle');
+        //     const messageEl = document.getElementById('alertMessage');
+
+        //     if (type === 'success') {
+        //         icon.className = 'custom-alert-icon success';
+        //         icon.textContent = '✓';
+        //         title.textContent = 'Success';
+        //     } else {
+        //         icon.className = 'custom-alert-icon error';
+        //         icon.textContent = '✕';
+        //         title.textContent = 'Error';
+        //     }
+
+        //     messageEl.textContent = message;
+        //     overlay.style.display = 'block';
+        // }
+
+        // function closeCustomAlert() {
+        //     document.getElementById('customAlert').style.display = 'none';
+        // }
+
+        // // Close alert when clicking outside
+        // document.getElementById('customAlert').addEventListener('click', function(e) {
+        //     if (e.target === this) {
+        //         closeCustomAlert();
+        //     }
+        // });
+
+        // // Clear any old localStorage data on page load
+        // window.addEventListener('load', () => {
+        //     localStorage.clear();
+        //     sessionStorage.clear();
+        // });
+
+        // // Toggle password visibility
+        // document.querySelectorAll('.toggle-eye').forEach(toggle => {
+        //     toggle.addEventListener('click', function() {
+        //         const input = this.previousElementSibling.previousElementSibling;
+        //         const icon = this.querySelector('.eyeIcon');
+                
+        //         if (input.type === 'password') {
+        //             input.type = 'text';
+        //             icon.src = '../assets/eye-show.png';
+        //         } else {
+        //             input.type = 'password';
+        //             icon.src = '../assets/eye-hide.png';
+        //         }
+        //     });
+        // });
+
+        // // Handle form submission
+        // document.querySelector('form').addEventListener('submit', async (e) => {
+        //     e.preventDefault();
+
+        //     const userType = document.getElementById('user-type').value;
+        //     const name = document.getElementById('name').value;
+        //     const email = document.getElementById('email').value;
+        //     const phone = document.getElementById('phone-number').value;
+        //     const password = document.getElementById('password').value;
+        //     const confirmPassword = document.getElementById('confirm-password').value;
+        //     const terms = document.getElementById('terms').checked;
+
+        //     // Validation
+        //     if (!terms) {
+        //         showCustomAlert('Please accept the Terms and Privacy Policies', 'error');
+        //         return;
+        //     }
+
+        //     if (password !== confirmPassword) {
+        //         showCustomAlert('Passwords do not match', 'error');
+        //         return;
+        //     }
+
+        //     if (password.length < 6) {
+        //         showCustomAlert('Password must be at least 6 characters', 'error');
+        //         return;
+        //     }
+
+        //     try {
+        //         const response = await fetch('http://localhost:5001/register', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             credentials: 'include',
+        //             body: JSON.stringify({
+        //                 userType,
+        //                 name,
+        //                 email,
+        //                 phone,
+        //                 password,
+        //                 confirmPassword
+        //             })
+        //         });
+
+        //         const data = await response.json();
+
+        //         if (data.success) {
+        //             showCustomAlert(data.message, 'success');
+        //             setTimeout(() => {
+        //                 window.location.replace('./login.html');
+        //             }, 1500);
+        //         } else {
+        //             showCustomAlert(data.message, 'error');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         showCustomAlert('Registration failed. Please check your connection.', 'error');
+        //     }
+        // });
+    </script>
+    <script src="../js/register.js"></script>
+</body>
+
+</html>
