@@ -20,7 +20,7 @@ const forgotPasswordRoutes = require("./routes/forgotPassword.routes");
 
 const app = express();
 
-// ================= MIDDLEWARE =================
+// MIDDLEWARE
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
@@ -28,10 +28,10 @@ app.use(cors({ origin: true, credentials: true }));
 app.use("/api/forgot-password", forgotPasswordRoutes);
 app.use('/api/doctor', doctorRoutes);
 
-// ================= STATIC FILES =================
+// STATIC FILES
 app.use(express.static(path.join(__dirname, "..")));
 
-// ================= HTML ROUTES =================
+// HTML ROUTES
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "html", "login.html"));
 });
@@ -84,7 +84,7 @@ app.get("/forgot-password.html", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "html", "forgot-password.html"));
 });
 
-// ================= API ROUTES =================
+// API ROUTES
 app.use("/", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", patientRoutes);
@@ -92,15 +92,15 @@ app.use("/api", doctorRoutes);
 app.use("/api", appointmentRoutes);
 app.use("/api", documentRoutes);
 
-// ================= ERROR HANDLING =================
+// ERROR HANDLING
 app.use(errorHandler);
 
-// ================= START SERVER =================
+// START SERVER
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-// ================= GRACEFUL SHUTDOWN =================
+// SHUTDOWN
 process.on("SIGINT", () => {
   console.log("\n⏳ Closing database connection...");
   connection.end((err) => {
