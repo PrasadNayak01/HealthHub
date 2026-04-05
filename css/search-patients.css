@@ -676,8 +676,6 @@ body {
     }
 }
 
-/* Add these NEW styles to your existing search-patients.html CSS - REPLACE the old document styles */
-
 /* Section header with button */
 .section-header-with-button {
     display: flex;

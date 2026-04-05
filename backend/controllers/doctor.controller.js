@@ -287,16 +287,12 @@ exports.getDashboardStats = (req, res) => {
   });
 };
 
-// ULTRA SIMPLE VERSION - Get recent patients
+// Get recent patients
 exports.getRecentPatients = (req, res) => {
   const doctorId = req.user.user_id;
 
-  // console.log('\n========================================');
-  // console.log('GET RECENT PATIENTS - DETAILED DEBUG');
-  // console.log('========================================');
   // console.log('Doctor ID:', doctorId);
 
-  // Super simple query - just get appointments
   const query = `
     SELECT 
       a.patient_id,
@@ -305,7 +301,8 @@ exports.getRecentPatients = (req, res) => {
       u.phone as patient_phone,
       a.appointment_date as last_appointment,
       a.status,
-      a.appointment_time
+      a.appointment_time,
+      a.payment_status
     FROM appointments a
     JOIN users u ON a.patient_id = u.user_id
     WHERE a.doctor_id = ?
@@ -321,20 +318,18 @@ exports.getRecentPatients = (req, res) => {
         message: "Database error occurred"
       });
     }
-    
-    // console.log('\n📊 RAW QUERY RESULTS:');
+
     // console.log('Total appointments found:', results.length);
     // console.log('\nFull results:');
     // console.log(JSON.stringify(results, null, 2));
     
-    // Group by patient and get most recent
     const patientsMap = new Map();
     
     results.forEach(row => {
       const patientId = row.patient_id;
       
       if (!patientsMap.has(patientId)) {
-        // console.log('\n➕ Adding patient:', row.patient_name);
+        // console.log('\n Adding patient:', row.patient_name);
         // console.log('  - Patient ID:', patientId);
         // console.log('  - Last appointment (raw):', row.last_appointment);
         // console.log('  - Status:', row.status);
@@ -345,6 +340,7 @@ exports.getRecentPatients = (req, res) => {
           patient_email: row.patient_email,
           patient_phone: row.patient_phone,
           last_appointment: row.last_appointment,
+          payment_status: row.payment_status,
           total_visits: 0
         });
       }
@@ -352,7 +348,7 @@ exports.getRecentPatients = (req, res) => {
     
     const patients = Array.from(patientsMap.values()).slice(0, 3);
     
-    // console.log('\n✅ FINAL PATIENTS TO SEND:');
+    // console.log('\nFINAL PATIENTS TO SEND:');
     // console.log('Count:', patients.length);
     // patients.forEach((p, i) => {
     //   console.log(`\nPatient ${i + 1}:`);

@@ -47,6 +47,8 @@ exports.getAllAppointments = (req, res) => {
       DATE_FORMAT(a.appointment_date, '%Y-%m-%d') as appointment_date,
       a.appointment_time,
       a.status,
+      a.payment_status,
+      a.payment_method,
       a.notes,
       a.created_at,
       a.completed_at,
@@ -90,10 +92,6 @@ exports.completeAppointment = (req, res) => {
     });
   }
 
-  // console.log('=== Complete Appointment ===');
-  // console.log('Appointment ID:', appointmentId);
-  // console.log('Doctor ID:', doctorId);
-
   // Get appointment details with patient info
   const getAppointmentQuery = `
     SELECT a.*, u.name as patient_name 
@@ -121,12 +119,19 @@ exports.completeAppointment = (req, res) => {
     const appointment = appointmentResult[0];
     const patientId = appointment.patient_id;
 
-    // console.log('Found appointment for patient:', appointment.patient_name);
-
     // Update appointment status to 'completed'
+    // If payment_method is 'cash' and payment_status is still 'pending', mark it as 'paid' automatically
     const updateQuery = `
       UPDATE appointments 
-      SET status = 'completed', notes = ?, completed_at = NOW() 
+      SET 
+        status = 'completed', 
+        notes = ?, 
+        completed_at = NOW(),
+        payment_status = CASE 
+          WHEN payment_method = 'cash' AND (payment_status IS NULL OR payment_status = 'pending') 
+          THEN 'paid' 
+          ELSE payment_status 
+        END
       WHERE appointment_id = ? AND doctor_id = ?
     `;
 
@@ -139,8 +144,6 @@ exports.completeAppointment = (req, res) => {
         });
       }
 
-      // console.log('Appointment marked as completed');
-
       // Add/update patient in patient_records table
       const checkPatientQuery = `
         SELECT * FROM patient_records 
@@ -152,7 +155,6 @@ exports.completeAppointment = (req, res) => {
           console.error("Error checking patient records:", err);
         } else if (patientRecords.length === 0) {
           // Patient doesn't exist in this doctor's records - ADD THEM
-          // console.log('Adding patient to doctor records...');
           const insertPatientQuery = `
             INSERT INTO patient_records 
             (patient_id, doctor_id, first_visit_date, last_visit_date, total_visits, created_at, updated_at)
@@ -165,14 +167,11 @@ exports.completeAppointment = (req, res) => {
             (err) => {
               if (err) {
                 console.error("Error adding patient to records:", err);
-              } else {
-                // console.log('✓ Patient added to records!');
               }
             }
           );
         } else {
           // Patient exists - UPDATE THEIR RECORD
-          // console.log('Updating existing patient record...');
           const updatePatientQuery = `
             UPDATE patient_records 
             SET last_visit_date = NOW(), 
@@ -187,8 +186,6 @@ exports.completeAppointment = (req, res) => {
             (err) => {
               if (err) {
                 console.error("Error updating patient record:", err);
-              } else {
-                // console.log('✓ Patient record updated!');
               }
             }
           );
@@ -299,10 +296,6 @@ exports.markAppointmentAsDone = (req, res) => {
   const { appointmentId } = req.params;
   const doctorId = req.user.user_id;
 
-  // console.log('=== Mark Appointment as Done ===');
-  // console.log('Appointment ID:', appointmentId);
-  // console.log('Doctor ID:', doctorId);
-
   // Step 1: Get appointment details
   const getAppointmentQuery = `
     SELECT 
@@ -337,12 +330,19 @@ exports.markAppointmentAsDone = (req, res) => {
     }
 
     const appointment = appointmentResult[0];
-    // console.log('Found appointment for patient:', appointment.patient_name);
 
     // Step 2: Update appointment status to 'done'
+    // Also auto-mark cash payments as paid
     const updateAppointmentQuery = `
       UPDATE appointments 
-      SET status = 'done', completed_at = NOW() 
+      SET 
+        status = 'done', 
+        completed_at = NOW(),
+        payment_status = CASE 
+          WHEN payment_method = 'cash' AND (payment_status IS NULL OR payment_status = 'pending') 
+          THEN 'paid' 
+          ELSE payment_status 
+        END
       WHERE appointment_id = ? AND doctor_id = ?
     `;
 
@@ -354,8 +354,6 @@ exports.markAppointmentAsDone = (req, res) => {
           message: "Error updating appointment"
         });
       }
-
-      // console.log('Appointment marked as done');
 
       // Step 3: Check if patient exists in patient_records for this doctor
       const checkPatientQuery = `
@@ -374,8 +372,6 @@ exports.markAppointmentAsDone = (req, res) => {
 
         if (patientRecords.length === 0) {
           // Patient doesn't exist in this doctor's records - ADD THEM
-          // console.log('Adding new patient to records:', appointment.patient_name);
-
           const insertPatientQuery = `
             INSERT INTO patient_records 
             (patient_id, doctor_id, first_visit_date, last_visit_date, total_visits, created_at, updated_at)
@@ -394,7 +390,6 @@ exports.markAppointmentAsDone = (req, res) => {
                 });
               }
 
-              // console.log('✓ Patient added to records!');
               res.json({
                 success: true,
                 message: "Appointment marked as done and patient added to your records!",
@@ -405,8 +400,6 @@ exports.markAppointmentAsDone = (req, res) => {
           );
         } else {
           // Patient exists - UPDATE THEIR RECORD
-          // console.log('Updating existing patient record:', appointment.patient_name);
-
           const updatePatientQuery = `
             UPDATE patient_records 
             SET last_visit_date = NOW(), 
@@ -427,7 +420,6 @@ exports.markAppointmentAsDone = (req, res) => {
                 });
               }
 
-              // console.log('✓ Patient record updated!');
               res.json({
                 success: true,
                 message: "Appointment marked as done. Patient record updated!",
@@ -439,5 +431,127 @@ exports.markAppointmentAsDone = (req, res) => {
         }
       });
     });
+  });
+};
+
+// Patient books an appointment
+exports.patientBookAppointment = (req, res) => {
+  const { doctorId, appointmentDate, appointmentTime } = req.body;
+  const patientId = req.user.user_id;
+
+  if (!doctorId || !appointmentDate || !appointmentTime) {
+    return res.status(400).json({
+      success: false,
+      message: "Doctor ID, Appointment Date, and Time are required"
+    });
+  }
+
+  // Check if slot is already booked
+  const checkSlotQuery = `
+    SELECT appointment_id FROM appointments
+    WHERE doctor_id = ?
+      AND appointment_date = ?
+      AND appointment_time = ?
+      AND status NOT IN ('cancelled')
+  `;
+
+  connection.query(checkSlotQuery, [doctorId, appointmentDate, appointmentTime], (err, existing) => {
+    if (err) {
+      console.error("Error checking slot:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    if (existing.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "This time slot is already booked. Please choose another time."
+      });
+    }
+
+    const { generateAppointmentId } = require("../utils/helpers");
+    const appointmentId = generateAppointmentId();
+
+    const appointmentData = {
+      appointment_id: appointmentId,
+      patient_id: patientId,
+      doctor_id: doctorId,
+      appointment_date: appointmentDate,
+      appointment_time: appointmentTime,
+      status: 'pending'
+    };
+
+    connection.query("INSERT INTO appointments SET ?", appointmentData, (err) => {
+      if (err) {
+        console.error("Error booking appointment:", err);
+        return res.status(500).json({ success: false, message: "Error booking appointment" });
+      }
+
+      res.json({
+        success: true,
+        message: "Appointment booked successfully!",
+        appointmentId: appointmentId
+      });
+    });
+  });
+};
+
+// Get booked slots for a doctor on a date (for patient to see availability)
+exports.getBookedSlots = (req, res) => {
+  const { doctorId, date } = req.query;
+
+  if (!doctorId || !date) {
+    return res.status(400).json({ success: false, message: "Doctor ID and date are required" });
+  }
+
+  const query = `
+    SELECT appointment_time
+    FROM appointments
+    WHERE doctor_id = ?
+      AND appointment_date = ?
+      AND status NOT IN ('cancelled')
+  `;
+
+  connection.query(query, [doctorId, date], (err, results) => {
+    if (err) {
+      console.error("Error fetching booked slots:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    const bookedSlots = results.map(r => r.appointment_time);
+    res.json({ success: true, bookedSlots });
+  });
+};
+
+// Patient get their own appointments
+exports.getPatientAppointments = (req, res) => {
+  const patientId = req.user.user_id;
+
+  const query = `
+    SELECT
+      a.appointment_id,
+      a.doctor_id,
+      DATE_FORMAT(a.appointment_date, '%Y-%m-%d') as appointment_date,
+      a.appointment_time,
+      a.status,
+      a.notes,
+      a.created_at,
+      u.name as doctor_name,
+      dp.speciality,
+      dp.consultation_fee,
+      dp.address as clinic_address
+    FROM appointments a
+    JOIN users u ON a.doctor_id = u.user_id
+    LEFT JOIN doctor_profiles dp ON a.doctor_id = dp.doctor_id
+    WHERE a.patient_id = ?
+    ORDER BY a.appointment_date DESC, a.appointment_time DESC
+  `;
+
+  connection.query(query, [patientId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    res.json({ success: true, appointments: results });
   });
 };

@@ -167,8 +167,6 @@ main {
 }
 
 /* Responsive Media Queries */
-
-/* Large tablets and small desktops */
 @media (max-width: 1200px) {
     .right-content {
         display: none;

@@ -178,11 +178,20 @@ function displayTodaysAppointments(appointments) {
                 <div class="duration">30 min</div>
             </div>
             <div class="appointment-details">
-                <h4>${apt.patient_name}</h4>
-                <p>${apt.patient_id}</p>
-                <span class="badge ${apt.status === 'completed' ? 'badge-confirmed' : 'badge-pending'}">
-                    ${apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
-                </span>
+              <h4>${apt.patient_name}</h4>
+              <p>${apt.patient_id}</p>
+
+              <span class="badge ${apt.status === 'completed' ? 'badge-confirmed' : 'badge-pending'}">
+                  ${apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
+              </span>
+
+              <!-- ✅ ADD THIS -->
+              <p style="margin-top:5px;">
+                  Payment: 
+                  <span style="color: ${apt.payment_status === 'paid' ? 'green' : 'orange'}; font-weight:600;">
+                      ${apt.payment_status === 'paid' ? 'Paid' : 'Unpaid'}
+                  </span>
+              </p>
             </div>
         `;
         scrollContainer.appendChild(div);
@@ -276,6 +285,12 @@ function displayRecentPatients(patients) {
             <div class="patient-info">
                 <h4>${patient.patient_name}</h4>
                 <p>Last visited: ${lastVisit}</p>
+                <!-- <p>
+                    Payment: 
+                    <span style="color: ${patient.payment_status === 'paid' ? 'green' : 'orange'}; font-weight:600;">
+                    ${patient.payment_status === 'paid' ? 'Paid' : 'Unpaid'}
+                    </span>
+                </p> -->
             </div>
             <button class="btn-action" onclick="viewPatient('${patient.patient_id}')">View</button>
         `;

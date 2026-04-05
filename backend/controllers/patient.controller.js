@@ -155,7 +155,7 @@ exports.updateProfile = (req, res) => {
             return res.status(500).json({ success: false, message: "Error creating profile" });
           }
 
-          // ✅ NOW handle document upload for new profiles too
+          // NOW handle document upload for new profiles too
           handleDocumentUpload((result) => {
             res.json(result);
           });
@@ -182,7 +182,7 @@ exports.updateProfile = (req, res) => {
             return res.status(500).json({ success: false, message: "Error updating profile" });
           }
 
-          // ✅ Handle document upload for existing profiles
+          // Handle document upload for existing profiles
           handleDocumentUpload((result) => {
             res.json(result);
           });
@@ -193,7 +193,7 @@ exports.updateProfile = (req, res) => {
 };
 
 
-// ========== DASHBOARD STATS ==========
+// DASHBOARD STATS
 
 // Get patient dashboard stats
 exports.getDashboardStats = (req, res) => {
@@ -230,7 +230,7 @@ exports.getDashboardStats = (req, res) => {
   });
 };
 
-// ========== DOCUMENT MANAGEMENT ==========
+// DOCUMENT MANAGEMENT
 
 // Patient - Get all my documents (uploaded by anyone)
 exports.getMyDocuments = (req, res) => {
@@ -297,9 +297,9 @@ exports.getMyDocuments = (req, res) => {
       // Sort by upload date (newest first)
       allDocuments.sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at));
 
-      // console.log(`✓ Found ${documentsResults.length} documents from patient_documents`);
-      // console.log(`✓ Found ${profileResults.length} documents from patient_profiles`);
-      // console.log(`✓ Total: ${allDocuments.length} documents for patient ${patientId}`);
+      // console.log(`Found ${documentsResults.length} documents from patient_documents`);
+      // console.log(`Found ${profileResults.length} documents from patient_profiles`);
+      // console.log(`Total: ${allDocuments.length} documents for patient ${patientId}`);
 
       res.json({
         success: true,
@@ -355,7 +355,7 @@ exports.downloadPatientDocument = (req, res) => {
 exports.downloadProfileMedicalReport = (req, res) => {
   const patientId = req.user.user_id;
 
-  // console.log('=== Download Profile Medical Report ===');
+  // console.log('Download Profile Medical Report');
   // console.log('Patient ID:', patientId);
 
   const query = `
@@ -383,7 +383,7 @@ exports.downloadProfileMedicalReport = (req, res) => {
 
     const report = results[0];
     
-    // console.log('✓ Report found:', report.medical_report_name);
+    // console.log('Report found:', report.medical_report_name);
     
     res.setHeader('Content-Type', report.medical_report_type);
     res.setHeader('Content-Disposition', `attachment; filename="${report.medical_report_name}"`);
@@ -391,7 +391,7 @@ exports.downloadProfileMedicalReport = (req, res) => {
   });
 };
 
-// Download medical report (legacy route - same as downloadProfileMedicalReport)
+// Download medical report
 exports.downloadMedicalReport = (req, res) => {
   const userId = req.user.user_id;
 
@@ -457,7 +457,7 @@ exports.deleteMedicalReport = (req, res) => {
   });
 };
 
-// ========== DOCTOR-FACING ENDPOINTS ==========
+// DOCTOR-FACING ENDPOINTS
 
 // Get recent patients (for doctors)
 exports.getRecentPatients = (req, res) => {
@@ -559,7 +559,7 @@ exports.getAllPatientRecords = (req, res) => {
       });
     }
 
-    // console.log('✓ Found', results.length, 'patient records');
+    // console.log('Found', results.length, 'patient records');
     res.json({
       success: true,
       records: results

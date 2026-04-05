@@ -26,7 +26,7 @@ async function logout() {
     }
 }
 
-// Load patient records - FIXED
+// Load patient records
 async function loadPatientRecords() {
     try {
         const response = await fetch('http://localhost:5001/api/patient-records', {
@@ -76,7 +76,7 @@ async function loadPatientRecords() {
     }
 }
 
-// Display patients in table - FIXED
+// Display patients in table
 function displayPatients(patients) {
     const tableBody = document.getElementById('patientsTable');
     const loadingContainer = document.getElementById('loadingContainer');
@@ -128,7 +128,7 @@ function displayPatients(patients) {
     `).join('');
 }
 
-// Update statistics - FIXED
+// Update statistics
 function updateStats(patients) {
     console.log('Updating stats for', patients.length, 'patients');
 
@@ -180,7 +180,7 @@ function escapeHtml(text) {
     return text.replace(/[&<>"']/g, m => map[m]);
 }
 
-// Search functionality - FIXED property names
+// Search functionality
 document.getElementById('searchInput').addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase().trim();
 

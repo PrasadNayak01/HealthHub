@@ -2,7 +2,7 @@ const connection = require("../config/database");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
-// Store OTPs in memory (for production, use Redis)
+// Store OTPs in memory
 const otpStore = new Map();
 
 // Configure email transporter
@@ -238,7 +238,7 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
-// Clean up expired OTPs (run periodically)
+// Clean up expired OTPs
 setInterval(() => {
     const now = Date.now();
     for (const [email, data] of otpStore.entries()) {

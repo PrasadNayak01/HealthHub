@@ -189,11 +189,7 @@ nav {
     text-decoration: none;
 }
 
-/* ---------------------------- */
 /* RESPONSIVE DESIGN */
-/* ---------------------------- */
-
-/* Large tablets and small desktops */
 @media (max-width: 1200px) {
     .left-content {
         width: 450px;

@@ -35,7 +35,7 @@ window.addEventListener('load', async () => {
     }
 });
 
-// ✅ Load profile completion status
+// Load profile completion status
 async function loadProfileStatus() {
     try {
         const response = await fetch('http://localhost:5001/api/patient-profile', {
@@ -63,7 +63,7 @@ async function loadProfileStatus() {
     }
 }
 
-// ✅ Load personal details
+// Load personal details
 async function loadPersonalDetails() {
     try {
         const response = await fetch('http://localhost:5001/api/patient-profile', {
@@ -95,7 +95,7 @@ async function loadPersonalDetails() {
     }
 }
 
-// ✅ Load dashboard statistics
+// Load dashboard statistics
 async function loadDashboardStats() {
     try {
         const response = await fetch('http://localhost:5001/api/patient/dashboard-stats', {
@@ -123,7 +123,7 @@ async function loadDashboardStats() {
     }
 }
 
-// ✅ Load recent reports - FIXED
+// Load recent reports - FIXED
 async function loadRecentReports() {
     try {
         // Fixed: Use correct endpoint without patient ID in URL
@@ -150,7 +150,7 @@ async function loadRecentReports() {
     }
 }
 
-// ✅ Display recent reports - FIXED to use uploaded_at
+// Display recent reports - FIXED to use uploaded_at
 function displayRecentReports(reports) {
     const container = document.querySelector('.reports-list');
     
@@ -192,7 +192,7 @@ function displayRecentReports(reports) {
     });
 }
 
-// ✅ Display empty state
+// Display empty state
 function displayEmptyReports() {
     const container = document.querySelector('.reports-list');
     
@@ -210,7 +210,7 @@ function displayEmptyReports() {
     `;
 }
 
-// ✅ View report details
+// View report details
 function viewReport(documentId) {
     window.location.href = 'medical-reports.html';
 }

@@ -7,13 +7,10 @@ const upload = require("../middleware/upload");
 // Get all appointments
 router.get("/appointments", verifyToken, isDoctorRole, appointmentController.getAllAppointments);
 
-// Create new appointment
-router.post("/appointments", verifyToken, isDoctorRole, appointmentController.createAppointment);
-
-// Complete appointment (with documents)
+// Complete appointment
 router.post("/appointments/complete", verifyToken, isDoctorRole, upload.array('documents', 10), appointmentController.completeAppointment);
 
-// Mark appointment as DONE (adds to patient records) - THIS IS THE KEY ROUTE
+// Mark appointment as DONE
 router.put("/appointments/:appointmentId/done", verifyToken, isDoctorRole, appointmentController.markAppointmentAsDone);
 
 // Delete appointment

@@ -231,7 +231,7 @@ body {
     color: #1f2937;
 }
 
-/* Content Grid - COMPACT VERSION */
+/* Content Grid */
 .content-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -257,7 +257,7 @@ body {
     margin-bottom: 1.2rem;
 }
 
-/* Appointments - COMPACT VERSION */
+/* Appointments */
 .appointment-item {
     display: flex;
     align-items: center;
@@ -325,12 +325,12 @@ body {
     color: #065F46;
 }
 
-/* UPDATED: Hide View button in Today's Appointments */
+/* Hide View button in Today's Appointments */
 .appointment-item .btn-action {
     display: none;
 }
 
-/* Scrollable Appointments Container - COMPACT SIZE */
+/* Scrollable Appointments Container */
 .appointments-scroll-container {
     max-height: 280px;
     overflow-y: auto;
@@ -356,7 +356,7 @@ body {
     background: #94a3b8;
 }
 
-/* Empty State - COMPACT */
+/* Empty State */
 .empty-appointments {
     display: flex;
     flex-direction: column;
@@ -371,7 +371,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* Patients - COMPACT VERSION */
+/* Patients */
 .patient-item {
     display: flex;
     align-items: center;
@@ -417,7 +417,7 @@ body {
     color: #6b7280;
 }
 
-/* Buttons - COMPACT VERSION */
+/* Buttons */
 .btn-action {
     background: none;
     border: 1px solid #d1d5db;
@@ -435,7 +435,6 @@ body {
     border-color: #4F46E5;
 }
 
-/* UPDATED: View All button positioning */
 .btn-view-all {
     width: 100%;
     margin-top: auto;

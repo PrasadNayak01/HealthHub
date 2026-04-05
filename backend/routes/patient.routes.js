@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const patientController = require("../controllers/patient.controller");
+const appointmentController = require("../controllers/appointment.controller");
+const paymentController = require("../controllers/payment.controller");
 const { verifyToken, isPatientRole, isDoctorRole } = require("../middleware/auth");
 const upload = require("../middleware/upload");
 
@@ -28,5 +30,13 @@ router.delete("/patient-profile/medical-report", verifyToken, isPatientRole, pat
 // DOCTOR ROUTES (for viewing patient data)
 router.get('/doctor/recent-patients', verifyToken, isDoctorRole, patientController.getRecentPatients);
 router.get("/patient-records", verifyToken, isDoctorRole, patientController.getAllPatientRecords);
+
+// PATIENT APPOINTMENT ROUTES
+router.post("/patient/book-appointment", verifyToken, isPatientRole, appointmentController.patientBookAppointment);
+router.get("/patient/booked-slots", verifyToken, isPatientRole, appointmentController.getBookedSlots);
+router.get("/patient/appointments", verifyToken, isPatientRole, appointmentController.getPatientAppointments);
+
+// PAYMENT ROUTES (patient side)
+router.post("/payment/record-pending-cash", verifyToken, isPatientRole, paymentController.recordPendingCashByPatient);
 
 module.exports = router;
