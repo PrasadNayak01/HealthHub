@@ -7,6 +7,7 @@
 ![HealthHub](https://img.shields.io/badge/HealthHub-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
 ![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
+![Stripe](https://img.shields.io/badge/Payments-Stripe-blueviolet)
 ![SIH 2025](https://img.shields.io/badge/SIH-2025-red)
 
 ---
@@ -15,12 +16,14 @@
 
 - [🌟 Overview](#-overview)
 - [🎯 Problem Statement](#-problem-statement)
+- [📸 Screenshots](#-screenshots)
 - [✨ Features](#-features)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [📦 Installation](#-installation)
 - [🔧 Environment Setup](#-environment-setup)
 - [📁 Project Structure](#-project-structure)
-- [📸 Screenshots](#-screenshots)
+- [🔌 API Reference](#-api-reference)
+- [🗄️ Database Tables](#️-database-tables)
 - [📞 Support](#-support)
 
 ---
@@ -52,114 +55,102 @@ Kerala hosts a significant migrant population lacking comprehensive health recor
 
 ---
 
+## 📸 Screenshots
+
+### 🩺 Doctor Dashboard
+![Doctor Dashboard](assets/screenshots/doctor-dashboard.png)
+
+### 🧑‍💼 Patient Dashboard
+![Patient Dashboard](assets/screenshots/patient-dashboard.png)
+
+---
+
 ## ✨ Features
 
 ### 👤 For Migrant Workers (Patients)
 
 1. **Registration & Authentication**
-   - Secure email-based registration with OTP verification
-   - Login with email and password
+   - Secure email-based registration
+   - JWT-based login with HTTP-only cookie sessions
    - Unique Patient ID generation
 
 2. **Profile Management**
-   - Complete personal details (name, age, gender, contact information)
-   - Medical details (blood group, medical history)
+   - Personal details: name, age, gender, weight, height, contact info
+   - Medical details: blood group, allergies, current medications, medical history
+   - Emergency contact information
    - Upload past medical reports (PDF support)
 
-3. **Medical Records**
-   - View all uploaded medical reports
-   - Download medical reports
-   - View new reports uploaded by doctors after appointments
+3. **Medical Records & Documents**
+   - View all uploaded reports (from both patients and doctors)
+   - Download and delete medical documents
 
-4. **Find Doctors**
-   - Browse available doctors
-   - View doctor profiles (specialization, experience, fees, hospital)
-   - Contact doctors via email or phone for appointments
+4. **Appointments**
+   - Book appointments with doctors (online via Stripe or cash)
+   - View all upcoming and past appointments with status
+   - Real-time slot availability per doctor per date
 
-5. **Dashboard**
-   - View unique Patient ID
-   - Access to profile and medical records
-   - Quick navigation to all features
+5. **Find Doctors**
+   - Browse all available doctors
+   - View doctor profiles: specialization, experience, fees, clinic address
 
 ### 👨‍⚕️ For Doctors
 
 1. **Registration & Authentication**
-   - Secure email-based registration with OTP verification
-   - Login with email and password
+   - Secure registration restricted to `@healthhub.com` email addresses
+   - JWT-based login with HTTP-only cookie sessions
    - Unique Doctor ID generation
 
 2. **Profile Management**
-   - Personal details (name, contact information)
-   - Professional details:
-     - Specialization
-     - Degree/Qualification
-     - Hospital/Clinic name and address
-     - Years of experience
-     - Consultation fees
+   - Personal and professional details
+   - Specialization, degree, experience, consultation fees, clinic address, bio
 
 3. **Patient Management**
-   - Search patients using Patient ID
-   - View complete patient records
-   - Access patient medical history and reports
+   - Search patients by Patient ID
+   - View complete patient records: medical history, allergies, medications
+   - Access all documents uploaded for a patient
 
 4. **Appointment Management**
-   - Add appointments using Patient ID
-   - Select appointment date and time
-   - Delete appointments if cancelled
-   - Mark appointments as completed
+   - Create, complete, and delete appointments
+   - Upload documents and add notes when completing appointments
+   - Record cash payments received
 
-5. **Medical Records**
-   - Upload new medical reports after appointments
-   - Add notes for patients
+5. **Dashboard**
+   - Today's total, completed, and pending appointments
+   - Total unique patients seen
+   - Recent patients list with quick-view
 
-6. **Dashboard**
-   - Today's appointments overview
-   - Total patients count
-   - Completed and pending appointments
-   - Recent patients list
-   - View unique Doctor ID
+### 💳 Payments
 
-7. **My Patients**
-   - View all patients who have visited
-   - Patient records with complete details
-   - Total visits and visit history
+- **Online (Stripe Checkout):** Patient pays before booking; appointment is created only after payment confirmation
+- **Cash:** Patient records cash intent; doctor confirms receipt
+- Idempotency checks prevent duplicate bookings and payments
+
+### 🔐 Authentication & Security
+
+- Passwords hashed with **bcrypt** (10 salt rounds)
+- Sessions via **JWT** stored in HTTP-only cookies
+- Doctor login restricted to `@healthhub.com` email addresses
+- Role-based access control
+
+### 📧 Forgot Password
+
+- 6-digit OTP sent via Gmail SMTP
+- OTP valid for 5 minutes, max 3 verification attempts
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling and responsive design
-- **JavaScript (ES6+)** - Client-side functionality
-
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web application framework
-- **RESTful API** - API architecture
-
-### Database
-- **MySQL** - Relational database
-- **MySQL2** - Database driver with connection pooling
-
-### Authentication & Security
-- **bcrypt** - Password hashing
-- **express-session** - Session management
-- **OTP Verification** - Email-based verification
-
-### Email Service
-- **Nodemailer** - Email sending
-- **Gmail SMTP** - Email service provider
-
-### File Handling
-- **Multer** - File upload middleware
-- **PDF Support** - Medical report uploads
-
-### Additional Libraries
-- **express-validator** - Input validation
-- **body-parser** - Request body parsing
-- **cors** - Cross-origin resource sharing
-- **dotenv** - Environment variables management
+| Layer | Technology |
+|-------|------------|
+| Frontend | HTML5, CSS3, JavaScript (ES6+) |
+| Backend | Node.js, Express.js |
+| Database | MySQL, MySQL2 |
+| Auth | bcryptjs, jsonwebtoken, HTTP-only cookies |
+| Payments | Stripe Checkout |
+| Email | Nodemailer, Gmail SMTP |
+| File Uploads | Multer (memory storage) |
+| Other | dotenv, cors, uuid, express-validator |
 
 ---
 
@@ -168,10 +159,10 @@ Kerala hosts a significant migrant population lacking comprehensive health recor
 ### Prerequisites
 - Node.js (v14 or higher)
 - MySQL (v8.0 or higher)
-- npm or yarn
 - Gmail account for email service
+- Stripe account for online payments
 
-### Setup Steps
+### Steps
 
 1. **Clone the repository**
 ```bash
@@ -185,16 +176,12 @@ cd backend
 npm install
 ```
 
-3. **Set up database**
-   - Create MySQL database named `healthhub`
-   - Import the SQL file:
-   ```bash
-   mysql -u root -p healthhub < "SQL Query/HealthHub.sql"
-   ```
+3. **Set up the database**
+```bash
+mysql -u root -p healthhub < "SQL Query/HealthHub.sql"
+```
 
-4. **Configure environment variables**
-   - Create `.env` file in `backend` folder
-   - Copy from `.env.example` and update values
+4. **Configure environment variables** — see [Environment Setup](#-environment-setup)
 
 5. **Start the server**
 ```bash
@@ -210,24 +197,30 @@ The application will run on `http://localhost:5001`
 Create a `.env` file in the `backend` directory:
 
 ```env
-# Email Configuration
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_gmail_app_password
 
-# Database Configuration
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_database_password
 DB_NAME=healthhub
 DB_CONNECTION_LIMIT=10
 DB_CONNECT_TIMEOUT=60000
+
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRY=7d
+COOKIE_MAX_AGE=604800000
+
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+CLIENT_URL=http://localhost:5001
 ```
 
 ### Gmail App Password Setup
-
 1. Go to [Google Account Settings](https://myaccount.google.com/)
 2. Enable **2-Step Verification** under Security
-3. Generate **App Password** for Mail
+3. Generate an **App Password** for Mail
 4. Use this password in `EMAIL_PASSWORD`
 
 ---
@@ -238,84 +231,18 @@ DB_CONNECT_TIMEOUT=60000
 healthhub/
 ├── backend/
 │   ├── config/
-│   │   ├── constants.js
-│   │   └── database.js
 │   ├── controllers/
-│   │   ├── appointment.controller.js
-│   │   ├── auth.controller.js
-│   │   ├── doctor.controller.js
-│   │   ├── document.controller.js
-│   │   ├── forgotPassword.controller.js
-│   │   ├── patient.controller.js
-│   │   └── user.controller.js
 │   ├── middleware/
-│   │   ├── auth.js
-│   │   ├── errorHandler.js
-│   │   └── upload.js
 │   ├── routes/
-│   │   ├── appointment.routes.js
-│   │   ├── auth.routes.js
-│   │   ├── doctor.routes.js
-│   │   ├── document.routes.js
-│   │   ├── forgotPassword.routes.js
-│   │   ├── patient.routes.js
-│   │   └── user.routes.js
 │   ├── utils/
-│   │   └── helpers.js
 │   ├── validators/
-│   │   └── validators.js
 │   ├── .env
-│   ├── .env.example
 │   ├── index.js
-│   ├── package.json
-│   └── package-lock.json
+│   └── package.json
 ├── assets/
-│   ├── eye-hide.png
-│   ├── eye-show.png
-│   ├── Forgot Password 3D Model.png
-│   ├── Health Hub Logo - Main.png
-│   ├── Health Hub Logo - Title.png
-│   ├── Login 3D Model.png
-│   └── Register 3D Model.png
 ├── css/
-│   ├── appointments.css
-│   ├── doctor-dashboard.css
-│   ├── doctor-directory.css
-│   ├── doctor-profile.css
-│   ├── forgot-password.css
-│   ├── login.css
-│   ├── medical-reports.css
-│   ├── patient-dashboard.css
-│   ├── patient-profile.css
-│   ├── patients.css
-│   ├── register.css
-│   └── search-patients.css
 ├── html/
-│   ├── appointments.html
-│   ├── doctor-dashboard.html
-│   ├── doctor-directory.html
-│   ├── doctor-profile.html
-│   ├── forgot-password.html
-│   ├── login.html
-│   ├── medical-reports.html
-│   ├── patient-dashboard.html
-│   ├── patient-profile.html
-│   ├── patients.html
-│   ├── register.html
-│   └── search-patients.html
 ├── js/
-│   ├── appointments.js
-│   ├── doctor-dashboard.js
-│   ├── doctor-directory.js
-│   ├── doctor-profile.js
-│   ├── forgot-password.js
-│   ├── login.js
-│   ├── medical-reports.js
-│   ├── patient-dashboard.js
-│   ├── patient-profile.js
-│   ├── patients.js
-│   ├── register.js
-│   └── search-patients.js
 ├── SQL Query/
 │   └── HealthHub.sql
 ├── .gitignore
@@ -325,33 +252,102 @@ healthhub/
 
 ---
 
-## 📸 Screenshots
+## 🔌 API Reference
 
-### Doctor Dashboard
-![Doctor Dashboard](assets/screenshots/doctor-dashboard.png)
-*Doctor dashboard showing today's appointments, total patients, and statistics*
+All routes are prefixed with `/api`. Protected routes require a valid JWT in the `authToken` cookie.
 
-### Patient Records
-![Patient Records](assets/screenshots/patient-dashboard.png)
-*Patient dashboard displaying unique patient ID, profile access, and medical records*
+### Auth — `/api/auth`
 
-### Login Page
-*Secure login interface with OTP verification*
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/register` | Public | Register a new patient or doctor |
+| POST | `/login` | Public | Login and receive JWT cookie |
+| POST | `/logout` | Protected | Clear auth cookie |
 
-### Registration
-*User registration with email verification*
+### User — `/api/user`
 
-### Patient Profile
-*Complete profile with personal and medical details*
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/me` | Protected | Get current logged-in user |
+| GET | `/verify` | Protected | Verify JWT token validity |
 
-### Doctor Profile
-*Professional profile with specialization and credentials*
+### Forgot Password — `/api/forgot-password`
 
-### Find Doctors
-*Browse and search doctors by specialty*
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/send-otp` | Public | Send 6-digit OTP to registered email |
+| POST | `/verify-otp` | Public | Verify OTP (max 3 attempts, 5 min expiry) |
+| POST | `/reset-password` | Public | Reset password after OTP verification |
 
-### Medical Reports
-*Upload and manage medical documents*
+### Doctor — `/api/doctor`
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/profile` | Doctor | Get own profile |
+| PUT | `/profile` | Doctor | Create or update doctor profile |
+| GET | `/all` | Patient | List all doctors |
+| GET | `/search-patient/:patientId` | Doctor | Search patient by Patient ID |
+| GET | `/dashboard-stats` | Doctor | Today's appointments and totals |
+| GET | `/recent-patients` | Doctor | Last 3 recent patients |
+
+### Patient — `/api/patient`
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/profile` | Patient | Get full profile |
+| PUT | `/profile` | Patient | Update profile with optional file upload |
+| GET | `/dashboard-stats` | Patient | Appointments, reports, doctors count |
+| GET | `/documents` | Patient | All documents |
+| GET | `/documents/:documentId/download` | Patient | Download a document |
+| GET | `/medical-report/download` | Patient | Download profile report |
+| DELETE | `/medical-report` | Patient | Delete profile report |
+| GET | `/all-records` | Doctor | All patient records for a doctor |
+
+### Appointments — `/api/appointments`
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/create` | Doctor | Create appointment by Patient ID |
+| GET | `/all` | Doctor | Get all doctor's appointments |
+| POST | `/complete` | Doctor | Complete appointment with optional file upload |
+| DELETE | `/:appointmentId` | Doctor | Delete or cancel appointment |
+| PUT | `/:appointmentId/done` | Doctor | Mark as done |
+| POST | `/book` | Patient | Book appointment |
+| GET | `/booked-slots` | Patient | Check slot availability |
+| GET | `/my` | Patient | Get patient's own appointments |
+
+### Documents — `/api/documents`
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/upload/:patientId` | Doctor | Upload document for a patient |
+| GET | `/:patientId` | Doctor/Patient | List patient's documents |
+| GET | `/:patientId/:documentId/download` | Doctor/Patient | Download specific document |
+
+### Payments — `/api/payments`
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/create-checkout-session` | Patient | Create Stripe Checkout session |
+| POST | `/verify-checkout-session` | Patient | Verify payment and create appointment |
+| POST | `/record-cash` | Doctor | Confirm cash received |
+| GET | `/:appointmentId` | Protected | Get payment for an appointment |
+| POST | `/patient-cash` | Patient | Record cash intent before visit |
+
+---
+
+## 🗄️ Database Tables
+
+| Table | Description |
+|-------|-------------|
+| `users` | All users (patients and doctors) with hashed passwords |
+| `patient_profiles` | Extended patient info, medical history, profile report |
+| `doctor_profiles` | Specialization, degree, fees, address, bio |
+| `appointments` | Appointment records with status and payment info |
+| `patient_documents` | Binary document storage for patient files |
+| `appointment_documents` | Documents attached to specific appointments |
+| `patient_records` | Doctor–patient relationship with visit counts |
+| `payments` | Payment records for online and cash transactions |
 
 ---
 
@@ -365,9 +361,9 @@ For support and queries:
 
 ## 🙏 Acknowledgments
 
-- **Smart India Hackathon 2025** - For the opportunity
-- **Government of Kerala** - Health Service Department
-- **College** - For project guidance and support
+- **Smart India Hackathon 2025** — For the opportunity
+- **Government of Kerala** — Health Service Department
+- **College** — For project guidance and support
 
 ---
 
