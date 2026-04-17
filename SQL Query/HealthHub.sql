@@ -1,16 +1,4 @@
--- ============================================================
--- DROP ALL TABLES (correct foreign key order)
--- ============================================================
-DROP TABLE IF EXISTS patient_documents;
-DROP TABLE IF EXISTS appointment_documents;
-DROP TABLE IF EXISTS payments;
-DROP TABLE IF EXISTS appointments;
-DROP TABLE IF EXISTS patient_records;
-DROP TABLE IF EXISTS patient_profiles;
-DROP TABLE IF EXISTS doctor_profiles;
-DROP TABLE IF EXISTS users;
 
-SET GLOBAL max_allowed_packet=67108864;
 
 -- ============================================================
 -- CREATE DATABASE
@@ -181,3 +169,16 @@ CREATE TABLE payments (
     INDEX idx_patient     (patient_id),
     INDEX idx_doctor      (doctor_id)
 );
+
+-- ============================================================
+-- INDEXING for improved Pe rformance
+-- ============================================================
+
+CREATE INDEX idx_appointments_doctor ON appointments(doctor_id);
+CREATE INDEX idx_appointments_status ON appointments(status);
+CREATE INDEX idx_appointments_patient ON appointments(patient_id);
+
+CREATE INDEX idx_payments_appointment ON payments(appointment_id);
+CREATE INDEX idx_payments_status ON payments(payment_status);
+
+CREATE INDEX idx_users_role ON users(role);

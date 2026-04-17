@@ -12,7 +12,7 @@ window.addEventListener('load', async () => {
             if (data.success && data.user) {
                 // Check if user is a doctor
                 if (data.user.role !== 'doctor') {
-                    window.location.replace('/patient-dashboard.html');
+                    window.location.replace('/login.html');
                     return;
                 }
                 currentUser = data.user;

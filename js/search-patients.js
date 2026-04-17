@@ -9,7 +9,7 @@ window.addEventListener('load', async () => {
             const data = await response.json();
             if (data.success && data.user) {
                 if (data.user.role !== 'doctor') {
-                    window.location.replace('/patient-dashboard.html');
+                    window.location.replace('/login.html');
                     return;
                 }
             }

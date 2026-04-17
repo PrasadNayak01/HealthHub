@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Health Hub</title>
+    <link rel="icon" type="image/png" href="../assets/Health Hub Logo - Title.png">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Custom Alert -->
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="alertIcon">⚠</div>
+                <h3 class="custom-alert-title" id="alertTitle">Alert</h3>
+            </div>
+            <p class="custom-alert-message" id="alertMessage">Message</p>
+            <div class="custom-alert-buttons" id="alertButtons">
+                <button class="custom-alert-button primary" onclick="closeAlert()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="logo">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="logo-icon">
+                <img src="../assets/Health Hub Logo - Main.png" alt="">
+            </div>
+            <span class="logo-text">HEALTH HUB</span>
+            <span class="admin-badge">ADMIN</span>
+
+        </div>
+        <div class="header-actions">
+            <span class="admin-name" id="adminName">Administrator</span>
+            <button class="btn-logout" onclick="confirmLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="admin-dashboard.html" class="nav-link active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    <span>Dashboard</span>
+                </a></li>
+                <li class="nav-item"><a href="admin-users.html" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>User Management</span>
+                </a></li>
+                <li class="nav-item"><a href="admin-analytics.html" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <span>Analytics & Research</span>
+                </a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Banner -->
+            <div class="welcome-banner">
+                <div>
+                    <h1>System Overview</h1>
+                    <p>Health Hub Platform Administration</p>
+                </div>
+                <div class="banner-date" id="bannerDate"></div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card skeleton"><div class="stat-icon blue"></div><div class="stat-label">Total Patients</div><div class="stat-value" id="s-patients">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon green"></div><div class="stat-label">Total Doctors</div><div class="stat-value" id="s-doctors">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon purple"></div><div class="stat-label">Total Appointments</div><div class="stat-value" id="s-appointments">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon orange"></div><div class="stat-label">Revenue Collected</div><div class="stat-value" id="s-revenue">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon teal"></div><div class="stat-label">Completed</div><div class="stat-value" id="s-completed">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon yellow"></div><div class="stat-label">Pending</div><div class="stat-value" id="s-pending">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon red"></div><div class="stat-label">Documents</div><div class="stat-value" id="s-documents">—</div></div>
+                <div class="stat-card skeleton"><div class="stat-icon indigo"></div><div class="stat-label">New Today</div><div class="stat-value" id="s-today">—</div></div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>User Registrations (6 months)</h3>
+                    </div>
+                    <canvas id="registrationChart" height="200"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Appointments by Status</h3>
+                    </div>
+                    <canvas id="statusChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Appointments Trend -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3>Monthly Appointment Trend</h3>
+                    <div class="chart-actions">
+                        <a href="admin-analytics.html" class="btn-view-more">Full Analytics →</a>
+                    </div>
+                </div>
+                <canvas id="aptTrendChart" height="120"></canvas>
+            </div>
+
+            <!-- Recent Users Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Recently Registered Users</h3>
+                    <a href="admin-users.html" class="btn-view-more">View All →</a>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>User ID</th><th>Name</th><th>Email</th><th>Role</th><th>Registered</th></tr></thead>
+                        <tbody id="recentUsersTable"><tr><td colspan="5" class="loading-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="actions-grid">
+                    <a href="admin-users.html?role=patient" class="action-card blue">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <span>Manage Patients</span>
+                    </a>
+                    <a href="admin-users.html?role=doctor" class="action-card green">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 8h-1V4H6v4H5c-1.66 0-3 1.34-3 3v6h4v2h12v-2h4v-6c0-1.66-1.34-3-3-3zM8 6h8v2H8V6zm8 12H8v-4h8v4zm2-4v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4h-2z"/></svg>
+                        <span>Manage Doctors</span>
+                    </a>
+                    <a href="admin-analytics.html" class="action-card purple">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                        <span>Research Analytics</span>
+                    </a>
+                    <button class="action-card orange" onclick="exportData('patients')">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        <span>Export Patient Data</span>
+                    </button>
+                    <button class="action-card teal" onclick="exportData('appointments')">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        <span>Export Appointments</span>
+                    </button>
+                    <button class="action-card red" onclick="exportData('doctors')">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        <span>Export Doctor Data</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
