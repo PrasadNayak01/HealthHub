@@ -13,7 +13,7 @@ window.addEventListener('load', async () => {
             if (data.success && data.user) {
                 // Check if user is a patient
                 if (data.user.role !== 'patient') {
-                    window.location.replace('/doctor-dashboard.html');
+                    window.location.replace('/login.html');
                     return;
                 }
                 

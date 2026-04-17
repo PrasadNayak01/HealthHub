@@ -11,7 +11,7 @@ window.addEventListener('load', async () => {
             const data = await response.json();
             if (data.success && data.user) {
                 if (data.user.role !== 'patient') {
-                    window.location.replace('/doctor-dashboard.html');
+                    window.location.replace('/login.html');
                     return;
                 }
                 currentPatient = data.user;

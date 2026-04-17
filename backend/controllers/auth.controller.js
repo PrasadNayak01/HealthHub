@@ -17,6 +17,13 @@ exports.register = (req, res) => {
 
   const { userType, name, email, phone, password } = req.body;
 
+  if (userType === 'admin') {
+    return res.status(403).json({ 
+      success: false, 
+      message: "Admin accounts cannot be registered through this form." 
+    });
+  }
+
   connection.query(
     "SELECT email FROM users WHERE email = ?",
     [email],
